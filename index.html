@@ -20,7 +20,6 @@
 		const initWS = () => {
 			ws = new WebSocket("ws://0.0.0.0:8080")
 			ws.onopen = (evt) => {
-				console.log(evt)
 				const msg = {
 					"RoomId": "idRoom1",
 					"ReqType": "add_move",
@@ -29,10 +28,11 @@
 				ws.send(JSON.stringify(msg))
 			}
 			
-			ws.onmessage = (evt) => {
-				console.log(evt)
+			ws.onmessage = (evtResponse) => {
+				console.log("data res: ", JSON.parse(evtResponse.data))
 				const div = document.getElementById('div-msg')
-				div.innerText += evt.data
+				div.innerText += evtResponse.data
+				var lastMessage = evtResponse
 			}
 
 			ws.onclose = () => {
