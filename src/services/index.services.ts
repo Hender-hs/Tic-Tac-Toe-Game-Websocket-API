@@ -43,12 +43,17 @@ class APIServices implements APIServiceClass {
 
 			this.responseError = { 
 				"error": true, 
-				"data": error.response.data, 
-				"status": error.response.status 
+				"data": error.config.data, 
+				"status": error.code 
 			}
 		}
 		
 		return this.responseData || this.responseError
+	}
+
+	public async createRoomRequest(data: any) {
+		const response = await this.requestAPI('POST', `/rooms/register`, data)
+		return response
 	}
 
 	public async getRoomStateRequest() {
