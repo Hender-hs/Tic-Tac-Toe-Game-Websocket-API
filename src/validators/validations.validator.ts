@@ -13,8 +13,18 @@ class Validations implements ValidationsMethods {
 		this.AddGuestSchema = this.getAddGuestSchema
 	}
 
+	public get createRoomSchema() {
+		return yup.object().shape({
+			"cnn_session_id": yup.string().required(),
+			"type": yup.string().required(),
+			"_id": yup.string().required(),
+			"host_id": yup.string().required(),
+		})
+	}
+	
 	public get getRoomStateSchema() {
 		return yup.object().shape({
+			"cnn_session_id": yup.string().required(),
 			"type": yup.string().required(),
 			"room_id": yup.string().required(),
 			"user_id": yup.string().required()
@@ -23,6 +33,7 @@ class Validations implements ValidationsMethods {
 
 	public get getAddMoveSchema() {
 		return yup.object().shape({
+			"cnn_session_id": yup.string().required(),
 			"mover_id": yup.string().required(),
 			"a1": yup.number().positive().integer(), 
 			"a2": yup.number().positive().integer(), 
@@ -38,14 +49,18 @@ class Validations implements ValidationsMethods {
 
 	public get getAddGuestSchema() {
 		return yup.object().shape({
+			"cnn_session_id": yup.string().required(),
 			"type": yup.string().required(),
 			"room_id": yup.string().required(),
-			"guest": yup.object(),
 			"guest_id": yup.string().required()
 		})
 	}
 
-	public validateGetRoomState(payload: addGuestPayload) {
+	public validateCreateRoom(payload: any) {
+		return this.createRoomSchema.isValid(payload)
+	}
+
+	public validateGetRoomState(payload: any) {
 		return this.getRoomStateSchema.isValid(payload)
 	}
 
@@ -58,6 +73,9 @@ class Validations implements ValidationsMethods {
 	}
 
 	public validate() {
+		if (this.payload.type === 'create_room') {
+			return this.validateCreateRoom(this.payload)
+		}
 		if (this.payload.type === 'get_room_state') {
 			return this.validateGetRoomState(this.payload)
 		}
